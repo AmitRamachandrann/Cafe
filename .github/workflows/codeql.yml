@@ -1,57 +1,45 @@
-name: "CodeQL"
+name: "CodeQL Analysis"
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - test  
 
 jobs:
-    
   analyze:
-    name: Analyze (${{ matrix.language }})
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
-    timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
-    permissions:
-      # required for all workflows
-      security-events: write
+    runs-on: ubuntu-latest  # Define the runner environment
 
-      # required to fetch internal or private CodeQL packs
-      packages: read
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-        - language: go
-          build-mode: autobuild
-        # - language: javascript-typescript
-        #   build-mode: none
-      
-        # To learn more about changing the languages that are analyzed or customizing the build mode for your analysis,
-        # see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/customizing-your-advanced-setup-for-code-scanning.
-        # If you are analyzing a compiled language, you can modify the 'build-mode' for that language to customize how
-        # your codebase is analyzed, see https://docs.github.com/en/code-security/code-scanning/creating-an-advanced-setup-for-code-scanning/codeql-code-scanning-for-compiled-languages
     steps:
-   
+    # Step 1: Check out the repository
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v3
 
-    # Initializes the CodeQL tools for scanning.
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
+    # Step 2: Set up CodeQL
+    - name: Set up CodeQL
+      uses: github/codeql-action/setup-codeql@v2
+
+    # Step 3: Initialize CodeQL databases
+    - name: Initialize CodeQL database
+      run: |
+        # Initialize CodeQL for supported languages (example: JavaScript, Python)
+        # You can change the language based on your repo's codebase
+        codeql database create codeql-db --language=python
+
+    # Step 4: Perform the analysis
+    - name: Perform CodeQL Analysis
+      run: |
+        # Run CodeQL analysis on the repository
+        codeql analyze codeql-db --format=sarif-latest --output=codeql-sarif-results.sarif
+
+    # Step 5: Upload the SARIF results
+    - name: Upload CodeQL analysis results
+      uses: github/codeql-action/upload-sarif@v2
       with:
-        languages: ${{ matrix.language }}
-        build-mode: ${{ matrix.build-mode }}
+        sarif_file: codeql-sarif-results.sarif
 
-    # - name: Perform CodeQL Analysis
-    #   uses: github/codeql-action/analyze@v3
+    # Optional Step: Upload code coverage or other relevant information
+    # - name: Upload coverage
+    #   uses: actions/upload-artifact@v3
     #   with:
-    #     category: "/language:${{ matrix.language }}-${{ github.sha }}"
-
-    - name: Upload SARIF results to GitHub
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: /home/runner/work/Cafe/results/go.sarif
-        category: "/language:${{ matrix.language }}-${{ github.sha }}"
-        
+    #     name: codeql-sarif-results
+    #     path: codeql-sarif-results.sarif
