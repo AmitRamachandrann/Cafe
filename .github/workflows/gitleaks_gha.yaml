@@ -19,7 +19,7 @@ jobs:
           echo "Source is ${{ github.server_url }}/${{ github.repository }}"
           echo "Subject is $"GITHUB_WORKFLOW_REF"|${{ github.run_id }}|${{ github.run_attempt }}|${{ github.run_number }}"
           echo "Job is $GITHUB_JOB"
-          echo "Step id is ${{ step.internal.id }}"
+          echo "Step id is ${{ steps.internal.id }}"
 
       - name: Create request JSON file in workspace
         run: |
