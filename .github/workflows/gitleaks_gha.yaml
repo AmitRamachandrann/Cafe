@@ -3,7 +3,7 @@ name: Gitleaks scan
 on:
   push:
     branches:
-    - demo-gha1
+    - demo-gha
 
 jobs:
   gitleaks-codescan:
