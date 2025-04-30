@@ -48,7 +48,7 @@ jobs:
           cloudbees_api_url: ${{ vars.CLOUDBEES_PREPROD_API_URL }}
           run_id: "14636561480"
           job_id: $GITHUB_JOB
-          step_id: "Gitleaks-scan"
+          step_id: "Gitleaks-scan" 
 
       # - name: check output.json
       #   run : |
