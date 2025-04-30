@@ -21,12 +21,12 @@ jobs:
           echo "Job is $GITHUB_JOB"
           echo "Step id is ${{ steps.internal.id }}"
 
-      - name: Create request JSON file in workspace
-        run: |
-          FILE_PATH="$GITHUB_WORKSPACE/store/request/request.json"
-          mkdir -p "$(dirname "$FILE_PATH")"
-          touch "$FILE_PATH"
-          echo "File created at: $FILE_PATH"
+      # - name: Create request JSON file in workspace
+      #   run: |
+      #     FILE_PATH="$GITHUB_WORKSPACE/store/request/request.json"
+      #     mkdir -p "$(dirname "$FILE_PATH")"
+      #     touch "$FILE_PATH"
+      #     echo "File created at: $FILE_PATH"
 
       - name: Create tar of source code
         run: |
@@ -41,7 +41,7 @@ jobs:
       #     echo "File created at: $FILE_PATH"
 
       - name: Gitleaks scan
-        uses: cloudbees-io/gitleaks-github-test@v2
+        uses: cloudbees-io/gitleaks-github-test@v3
         with:
           cloudbees_pat_token: ${{ secrets.CLOUDBEES_PREPROD_PAT }}
           is-github-workflow: true
